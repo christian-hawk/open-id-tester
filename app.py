@@ -9,6 +9,9 @@ import clientconfig as cfg
 
 app = Flask(__name__)
 
+# here you can setup acr_values for scripts
+ACR_VALUES = "forgot_password"
+
 @app.route('/login')
 def login():
     '''
@@ -22,6 +25,7 @@ def login():
                       "client_id": cfg.CLIENT_ID,
                       "client_secret": cfg.CLIENT_SECRET,
                       "redirect_uri": cfg.REDIRECT_URI,
+                      "acr_values": ACR_VALUES,
                       "state": base64.b64encode(os.urandom(18)).decode(),
                       "nonce": base64.b64encode(os.urandom(18)).decode()
                       }
