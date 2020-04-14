@@ -9,19 +9,6 @@ import clientconfig as cfg
 
 app = Flask(__name__)
 
-'''
-CLIENT_ID = "8d05ef28-ede9-49a9-886a-028c66f0448c"
-CLIENT_SECRET = "novanovidade"
-AUTH_URI = "https://christian-XPS-8700/oxauth/restv1/authorize"
-SCOPE = "openid profile"
-RESPONSE_TYPE = "code"
-REDIRECT_URI = "https://localhost:5000/callback"
-TOKEN_ENDPOINT = "https://christian-xps-8700/oxauth/restv1/token"
-USERINFO = 'https://christian-XPS-8700/oxauth/restv1/userinfo'
-SSL_VERIFY = False
-'''
-
-
 @app.route('/login')
 def login():
     '''
@@ -147,4 +134,6 @@ def get_tokens(code):
     return tokens
 
 
-app.run(host="localhost", ssl_context=('cert.pem', 'key.pem'))
+if __name__ == '__main__':
+    app.debug = True
+    app.run(host="localhost", ssl_context=('cert.pem', 'key.pem'))
