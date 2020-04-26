@@ -28,6 +28,7 @@ TOKEN_ENDPOINT = "https://YOURHOST/oxauth/restv1/token"
 
 USERINFO = 'https://YOURHOST/oxauth/restv1/userinfo'
 
+# use SSL_VERIFY with caution
 SSL_VERIFY = False
 ```
 
