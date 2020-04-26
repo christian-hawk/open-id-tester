@@ -10,6 +10,7 @@ Install packages: `pip install -r requirements.txt`
 
 create `clientconfig.py`
 
+
 ```python
 CLIENT_ID = "YOURCLIENTID"
 
@@ -30,5 +31,7 @@ USERINFO = 'https://YOURHOST/oxauth/restv1/userinfo'
 SSL_VERIFY = False
 ```
 
+Generate certs:
 run `openssl req -x509 -newkey rsa:4096 -nodes -out cert.pem -keyout key.pem -days 365`
 
+This client **does not** register client, you'll have to register your client manually.
