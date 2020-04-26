@@ -54,6 +54,8 @@ def callback():
     - redirects to /userinfo/<token>
     :return: redirects to get_user_info url w/ access token
     '''
+    if request.args.get('error_description'):
+        print("OP error: " + request.args.get('error_description'))
     code = request.args.get('code')
     session_id = request.args.get('session_id')
     session_state = request.args.get('session_state')
@@ -63,7 +65,7 @@ def callback():
     tokens = get_tokens(code)
     print("Access Token: " + str(tokens['access_token']))
 
-    return redirect(url_for('get_user_info',token=tokens['access_token']))
+    return redirect(url_for('get_user_info', token=tokens['access_token']))
 
 
 @app.route('/userinfo/<token>')
