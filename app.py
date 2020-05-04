@@ -11,6 +11,29 @@ app = Flask(__name__)
 
 # here you can setup acr_values for scripts
 ACR_VALUES = "forgot_password"
+sub = ''
+
+@app.route('/endsession/<token>')
+def end_session(token):
+    """
+    Ends user session - uses logout redirect uri if string is not empty
+    :param token: Previously issued ID Token (id_token) passed to the logout endpoint as a hint
+    about the End-User's current authenticated session with the Client.
+    :return: redirect to login
+    """
+    global sub
+    params = {
+        "id_token_hint": sub
+        #"state": base64.b64encode(os.urandom(18)).decode()
+    }
+    if cfg.LOGOUT_REDIRECT_URI is not "":
+        params.update({"post_logout_redirect_uri" : cfg.LOGOUT_REDIRECT_URI})
+
+    r = requests.get(url=cfg.ENDSESSION_URI, verify=cfg.SSL_VERIFY)
+    #r = requests.get(url=cfg.ENDSESSION_URI, params=params, verify=cfg.SSL_VERIFY)
+
+    print(r.json())
+
 
 @app.route('/login')
 def login():
@@ -29,7 +52,6 @@ def login():
                       "state": base64.b64encode(os.urandom(18)).decode(),
                       "nonce": base64.b64encode(os.urandom(18)).decode()
                       }
-
 
     for param in request_object.keys():
         html = html + html_line % (param, request_object[param])
@@ -77,11 +99,14 @@ def get_user_info(token):
     '''
     print(token)
     headers = {"Authorization": "Bearer %s" % token}
+
     r = requests.post(url=cfg.USERINFO, headers=headers, verify=cfg.SSL_VERIFY)
+
     print(r.json())
     json_resp = r.json()
-
-    #lets create an HTML code while we don't use templates
+    global sub
+    sub = json_resp['sub']
+    # lets create an HTML code while we don't use templates
     html = ''
     html_line = '\t\t\t\t<p><b>%s: </b>%s</p>\n'
     for item in json_resp:
@@ -91,8 +116,9 @@ def get_user_info(token):
 
     return'''
     <H1>This is your userinfo</H1>
+    <a href=%s>Logout</a>
     %s
-    ''' % (html)
+    ''' % (url_for('end_session', token=token), html)
 
     #return r.json()
 
