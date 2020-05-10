@@ -10,8 +10,11 @@ import clientconfig as cfg
 app = Flask(__name__)
 
 # here you can setup acr_values for scripts
-ACR_VALUES = "forgot_password"
+ACR_VALUES = "passport_saml"
 sub = ''
+
+'''
+STILL NOT WORKING - TO DO
 
 @app.route('/endsession/<token>')
 def end_session(token):
@@ -25,6 +28,7 @@ def end_session(token):
     params = {
         "id_token_hint": sub
         #"state": base64.b64encode(os.urandom(18)).decode()
+        f
     }
     if cfg.LOGOUT_REDIRECT_URI is not "":
         params.update({"post_logout_redirect_uri" : cfg.LOGOUT_REDIRECT_URI})
@@ -34,6 +38,7 @@ def end_session(token):
 
     print(r.json())
 
+'''
 
 @app.route('/login')
 def login():
@@ -97,6 +102,7 @@ def get_user_info(token):
     :param token: client token
     :return: all userinfo attributes scoped
     '''
+    print("Entered get_user_info")
     print(token)
     headers = {"Authorization": "Bearer %s" % token}
 
@@ -104,8 +110,9 @@ def get_user_info(token):
 
     print(r.json())
     json_resp = r.json()
-    global sub
-    sub = json_resp['sub']
+    #global sub
+    #sub = json_resp['sub']
+
     # lets create an HTML code while we don't use templates
     html = ''
     html_line = '\t\t\t\t<p><b>%s: </b>%s</p>\n'
@@ -116,9 +123,16 @@ def get_user_info(token):
 
     return'''
     <H1>This is your userinfo</H1>
+    %s
+    ''' % html
+
+    '''
+    <H1>This is your userinfo</H1>
     <a href=%s>Logout</a>
     %s
     ''' % (url_for('end_session', token=token), html)
+    '''
+    '''
 
     #return r.json()
 
