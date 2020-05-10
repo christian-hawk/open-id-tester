@@ -78,8 +78,8 @@ def callback():
     '''
     - Receives callback from OP, including 'code'
     - Get access token using the code
-    - redirects to /userinfo/<token>
-    :return: redirects to get_user_info url w/ access token
+    - redirects to /userinfo/<token> OR links to userinfo
+    :return: redirects to get_user_info url w/ access token OR links to userinfo
     '''
     if request.args.get('error_description'):
         print("OP error: " + request.args.get('error_description'))
@@ -92,7 +92,17 @@ def callback():
     tokens = get_tokens(code)
     print("Access Token: " + str(tokens['access_token']))
 
+    return '''
+    <H1> Logged in </H1>
+    <a href="%s"> Get userinfo </a>
+    ''' % (url_for('get_user_info', token=tokens['access_token']))
+
+    '''
+    TO redirect to userinfo use this return
     return redirect(url_for('get_user_info', token=tokens['access_token']))
+    '''
+
+
 
 
 @app.route('/userinfo/<token>')
