@@ -11,6 +11,7 @@ app = Flask(__name__)
 
 # here you can setup acr_values for scripts
 ACR_VALUES = "passport_saml"
+
 sub = ''
 
 '''
@@ -97,20 +98,16 @@ def callback():
     <a href="%s"> Get userinfo </a>
     ''' % (url_for('get_user_info', token=tokens['access_token']))
 
-    '''
-    TO redirect to userinfo use this return
-    return redirect(url_for('get_user_info', token=tokens['access_token']))
-    '''
 
 
 
 
 @app.route('/userinfo/<token>')
 def get_user_info(token):
-    '''
+    '''''''''''''''''''''''''''''
     Shows user information scoped
     :param token: client token
-    :return: all userinfo attributes scoped
+    :return: all userinfo attribute                                                 s scoped
     '''
     print("Entered get_user_info")
     print(token)
@@ -192,4 +189,4 @@ def get_tokens(code):
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host="localhost", ssl_context=('cert.pem', 'key.pem'))
+    app.run(host='0.0.0.0', ssl_context=('cert.pem', 'key.pem'))
