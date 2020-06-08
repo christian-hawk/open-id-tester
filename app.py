@@ -10,8 +10,12 @@ import clientconfig as cfg
 app = Flask(__name__)
 
 # here you can setup acr_values for scripts
-ACR_VALUES = "forgot_password"
+ACR_VALUES = "passport_saml"
+
 sub = ''
+
+'''
+STILL NOT WORKING - TO DO
 
 @app.route('/endsession/<token>')
 def end_session(token):
@@ -25,6 +29,7 @@ def end_session(token):
     params = {
         "id_token_hint": sub
         #"state": base64.b64encode(os.urandom(18)).decode()
+        f
     }
     if cfg.LOGOUT_REDIRECT_URI is not "":
         params.update({"post_logout_redirect_uri" : cfg.LOGOUT_REDIRECT_URI})
@@ -34,6 +39,7 @@ def end_session(token):
 
     print(r.json())
 
+'''
 
 @app.route('/login')
 def login():
@@ -73,8 +79,8 @@ def callback():
     '''
     - Receives callback from OP, including 'code'
     - Get access token using the code
-    - redirects to /userinfo/<token>
-    :return: redirects to get_user_info url w/ access token
+    - redirects to /userinfo/<token> OR links to userinfo
+    :return: redirects to get_user_info url w/ access token OR links to userinfo
     '''
     if request.args.get('error_description'):
         print("OP error: " + request.args.get('error_description'))
@@ -87,16 +93,23 @@ def callback():
     tokens = get_tokens(code)
     print("Access Token: " + str(tokens['access_token']))
 
-    return redirect(url_for('get_user_info', token=tokens['access_token']))
+    return '''
+    <H1> Logged in </H1>
+    <a href="%s"> Get userinfo </a>
+    ''' % (url_for('get_user_info', token=tokens['access_token']))
+
+
+
 
 
 @app.route('/userinfo/<token>')
 def get_user_info(token):
-    '''
+    '''''''''''''''''''''''''''''
     Shows user information scoped
     :param token: client token
-    :return: all userinfo attributes scoped
+    :return: all userinfo attribute                                                 s scoped
     '''
+    print("Entered get_user_info")
     print(token)
     headers = {"Authorization": "Bearer %s" % token}
 
@@ -104,8 +117,9 @@ def get_user_info(token):
 
     print(r.json())
     json_resp = r.json()
-    global sub
-    sub = json_resp['sub']
+    #global sub
+    #sub = json_resp['sub']
+
     # lets create an HTML code while we don't use templates
     html = ''
     html_line = '\t\t\t\t<p><b>%s: </b>%s</p>\n'
@@ -116,9 +130,16 @@ def get_user_info(token):
 
     return'''
     <H1>This is your userinfo</H1>
+    %s
+    ''' % html
+
+    '''
+    <H1>This is your userinfo</H1>
     <a href=%s>Logout</a>
     %s
     ''' % (url_for('end_session', token=token), html)
+    '''
+    '''
 
     #return r.json()
 
@@ -168,4 +189,4 @@ def get_tokens(code):
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host="localhost", ssl_context=('cert.pem', 'key.pem'))
+    app.run(host='0.0.0.0', ssl_context=('cert.pem', 'key.pem'))
