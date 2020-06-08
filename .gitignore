@@ -1,6 +1,6 @@
 venv/
 clientconfig.py
-*.pem
+#*.pem
 env/
 build/
 develop-eggs/
